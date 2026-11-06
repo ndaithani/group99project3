@@ -1,5 +1,6 @@
 package group99project3;
 
+import java.awt.BorderLayout;
 import javax.swing.*;
 
 // -------------------------------------------------------------------------
@@ -11,15 +12,20 @@ import javax.swing.*;
  * @version Nov 6, 2026
  */
 public class CustomerWindow
+    extends JFrame
 {
     // ~ Fields ................................................................
-    Order currentOrder;
-    JButton[] menuDisplay;
-    JTextArea cartDisplay;
-    JList<Order> pickupDisplay;
-    JLabel totalLabel;
-    JButton addButton;
-    JButton submitButton;
+    private final Item[] menu;
+    private final LinkedQueue<Order> orderQ;
+    private final DoublyLinkedList<Order> pickup;
+    
+    private Order currentOrder;
+    private JButton[] menuDisplay;
+    private JList<Item> cartDisplay;
+    private JList<Order> pickupDisplay;
+    private JLabel totalLabel;
+    private JButton addButton;
+    private JButton submitButton;
 
     // ~ Constructors ..........................................................
 
@@ -27,21 +33,38 @@ public class CustomerWindow
     // ----------------------------------------------------------
     /**
      * Create a new CustomerWindow object.
+     * 
      * @param menu
      * @param orderQ
      * @param pickup
      */
-    public CustomerWindow(Item[] menu, LinkedQueue<Order> orderQ, DoublyLinkedList<Order> pickup)
+    public CustomerWindow(
+        Item[] menu,
+        LinkedQueue<Order> orderQ,
+        DoublyLinkedList<Order> pickup)
     {
-        //
+        super("JavaHouse(Customer)");
+        
+        this.menu = menu;
+        this.orderQ = orderQ;
+        this.pickup = pickup;
+        this.currentOrder = currentOrder;
+        
+        initComponents();
+        
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        pack();
+        setVisible(true);
     }
 
 
     private void initComponents()
     {
-        //
+        setLayout(new BorderLayout());
+        
     }
-    
+
+
     private void addItemToOrder(Item item)
     {
         //
@@ -64,6 +87,7 @@ public class CustomerWindow
     {
         //
     }
+
 
     private void refreshCart()
     {

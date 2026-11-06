@@ -11,6 +11,7 @@ import javax.swing.*;
  * @version Nov 6, 2026
  */
 public class BaristaWindow
+    extends JFrame
 {
     // ~ Fields ................................................................
     JTextArea currentOrderDisplay;
@@ -26,10 +27,13 @@ public class BaristaWindow
     // ----------------------------------------------------------
     /**
      * Create a new BaristaWindow object.
+     * 
      * @param orderQ
      * @param pickup
      */
-    public BaristaWindow(LinkedQueue<Order> orderQ, DoublyLinkedList<Order> pickup)
+    public BaristaWindow(
+        LinkedQueue<Order> orderQ,
+        DoublyLinkedList<Order> pickup)
     {
         //
     }
@@ -39,6 +43,7 @@ public class BaristaWindow
     {
         //
     }
+
 
     private void nextOrder()
     {
@@ -50,6 +55,7 @@ public class BaristaWindow
     {
         //
     }
+
 
     public void refreshQueue()
     {
