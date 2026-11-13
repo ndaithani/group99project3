@@ -1,10 +1,10 @@
 # Reflection
-
 **What Changed?**
+* Added a main() method to the `JavaHouseModel` in order to allow
 * Use of ArrayLists and Arrays to manage item data to allow for dynamic editing of a selection then permanent instatiation.
 * Removed direct model-view interaction in order to adhere to MVC standards.
 * Status normalization was instantiated in order to allow for more sta
-* Indexed getters were implemented to DoublyLinkedList to create string lists.
+* Indexed getters were implemented to `DoublyLinkedList` to create string lists.
 
 **Does the model stand alone?**
 Yes, the model has zero GUI dependencies and runs independently in a terminal via the main method. 
@@ -20,7 +20,6 @@ We learned how to continuously update the line to keep both GUIs synchronized. W
 
 
 # Next Steps
-
 **What is left to finish the MVP?**
 * Add validation of names and other potentially-null parameters to the view.
 * Complete JUnit testing across `Item`, `Order`, and `JavaHouse` controller edge cases.
@@ -28,8 +27,8 @@ We learned how to continuously update the line to keep both GUIs synchronized. W
 
 **What will we add to Deliverable 4?**
 * Order customization
-  * Requires changes made to Item's fields and toString() method, JavaHouseModel's submitOrder() method, JavaHouse's handleAddItem()/handleSubmitOrder() methods, and CustomerWindow's GUI.
-  * LinkedQueue, DoublyLinkedList, Order, and BaristaWindow may stay the same because none of the first three directly interact with Item's properties, only hold Orders or Items respectively. The fourth may stay the same due to it only displaying the data provided by the Items in each Order, not possibilities.
+  * Requires changes made to `Item`'s fields and toString() method, `JavaHouseModel`'s submitOrder() method, `JavaHouse`'s handleAddItem()/handleSubmitOrder() methods, and `CustomerWindow`'s GUI.
+  * `LinkedQueue`, `DoublyLinkedList`, `Order`, and `BaristaWindow` may stay the same because none of the first three directly interact with `Item`'s properties, only hold `Order`s or `Item`s respectively. The fourth may stay the same due to it only displaying the data provided by the `Item`s in each `Order`, not possibilities.
 
 **Which stretch goals will you attempt?**
 We will be attempting to integrate order customization.
@@ -40,8 +39,8 @@ Tests that verify new customization methods and pricing calculations, especially
 **Who will do what?**
 * **Leo Quezada-Rocha:** Implement null-checks in GUI and make aesthetic edits.
 * **Sachin Nimmalapudi:** Implement testing for his methods.
-* **Naomika Aithani:** Ensure integration with optimized data management.
-* **Daana Doddabendigere:** Implement customization.
+* **Naomika Aithani:** Implement customization for items.
+* **Daana Doddabendigere:** Ensure overall integration through controller(`JavaHouse`).
 
 # Attribution & GenAI Note
 
