@@ -59,5 +59,5 @@ Tests that verify new customization methods and pricing calculations, especially
 | `CustomerWindowTest.java` | Leo Quezada-Rocha | Wrote JUnit tests for cart updates, totals, clearing, and pickup rendering; updated with GenAI assistance for decoupled signatures |
 | `BaristaWindow.java` | Leo Quezada-Rocha | Created with GenAI and reviewed by Leo  |
 | `BaristaWindowTest.java` | Leo Quezada-Rocha | Wrote JUnit tests for updates on the order and pickup status|
-| `JavaHouse.java` | Daana Doddabendigere | |
+| `JavaHouse.java` | Daana Doddabendigere | Wrote class, constructor, and methods |
 | `README.md` | Naomika Aithani | Drafted Reflection, Next Steps, and Attribution |
