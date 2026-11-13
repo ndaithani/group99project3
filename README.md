@@ -55,9 +55,9 @@ Tests that verify new customization methods and pricing calculations, especially
 | `DoublyLinkedListTest.java` | Naomika Aithani | Wrote JUnit tests for list operations, bounds, and removal |
 | `JavaHouseModel.java` | Naomika Aithani | Wrote model state management methods and a standalone main method, used AI to ensure methods were valid and structure would fit the rubric criteria |
 | `JavaHouseModelTest.java` | Naomika Aithani | Wrote JUnit tests for order submission, stock limits, queue progression, and pickup |
-| `CustomerWindow.java` | Leo Quezada-Rocha | |
+| `CustomerWindow.java` | Leo Quezada-Rocha | Created with GenAI and looked over by Leo |
 | `CustomerWindowTest.java` | Leo Quezada-Rocha | Wrote JUnit tests for cart updates, totals, clearing, and pickup rendering; updated with GenAI assistance for decoupled signatures |
-| `BaristaWindow.java` | Leo Quezada-Rocha | |
-| `BaristaWindowTest.java` | Leo Quezada-Rocha | |
+| `BaristaWindow.java` | Leo Quezada-Rocha | Created with GenAI and looked over by Leo  |
+| `BaristaWindowTest.java` | Leo Quezada-Rocha | Wrote Junit tests|
 | `JavaHouse.java` | Daana Doddabendigere | |
 | `README.md` | Naomika Aithani | Drafted Reflection, Next Steps, and Attribution |
