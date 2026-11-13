@@ -58,6 +58,6 @@ Tests that verify new customization methods and pricing calculations, especially
 | `CustomerWindow.java` | Leo Quezada-Rocha | |
 | `CustomerWindowTest.java` | Leo Quezada-Rocha | Wrote JUnit tests for cart updates, totals, clearing, and pickup rendering; updated with GenAI assistance for decoupled signatures |
 | `BaristaWindow.java` | Leo Quezada-Rocha | |
-| `JavaHouse.java` | Daana Doddabendigere | |
 | `BaristaWindowTest.java` | Leo Quezada-Rocha | |
+| `JavaHouse.java` | Daana Doddabendigere | |
 | `README.md` | Naomika Aithani | Drafted Reflection, Next Steps, and Attribution |
