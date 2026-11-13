@@ -47,8 +47,8 @@ Tests that verify new customization methods and pricing calculations, especially
 
 | File | Team Member(s) | Contribution |
 | :--- | :--- | :--- |
-| `Item.java` | Naomika Aithani | Wrote class, constructor, and methods |
-| `Order.java` | Naomika Aithani | Wrote class, constructors, and methods |
+| `Item.java` | Naomika Aithani and Daana Doddabendigere | Wrote class, constructor, and methods |
+| `Order.java` | Naomika Aithani and Daana Doddabendigere | Wrote class, constructors, and methods |
 | `LinkedQueue.java` | Naomika Aithani | Recycled and adapted generic linked queue implementation from prior assignment |
 | `LinkedQueueTest.java` | Naomika Aithani | Wrote JUnit tests for queue operations and exceptions |
 | `DoublyLinkedList.java` | Naomika Aithani | Recycled and adapted generic doubly linked list with minimal edits |
@@ -59,5 +59,5 @@ Tests that verify new customization methods and pricing calculations, especially
 | `CustomerWindowTest.java` | Leo Quezada-Rocha | Wrote JUnit tests for cart updates, totals, clearing, and pickup rendering; updated with GenAI assistance for decoupled signatures |
 | `BaristaWindow.java` | Leo Quezada-Rocha | Created with GenAI and reviewed by Leo  |
 | `BaristaWindowTest.java` | Leo Quezada-Rocha | Wrote JUnit tests for updates on the order and pickup status|
-| `JavaHouse.java` | Daana Doddabendigere | Wrote class, constructor, and methods |
+| `JavaHouse.java` | Daana Doddabendigere | Wrote class, constructor, and methods and used GenAI to draft the order, queue, and pickup methods and debug compile errors |
 | `README.md` | Naomika Aithani | Drafted Reflection, Next Steps, and Attribution |
