@@ -5,30 +5,22 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 // -------------------------------------------------------------------------
-/**
- * Write a one-sentence summary of your class here. Follow it with additional
- * details about its purpose, what abstraction it represents, and how to use it.
- * 
+/** 
  * @author lquezadr
  * @version Nov 6, 2026
  */
-public class CustomerWindow
-    extends JFrame
+public class CustomerWindow extends JFrame
 {
-    // ~ Fields ................................................................
-    final Item[] menu;
-    final LinkedQueue<Order> orderQ;
-    final DoublyLinkedList<Order> pickup;
-
     JavaHouse controller;
-    Order currentOrder;
 
-    final DefaultListModel<Item> cartModel = new DefaultListModel<>();
-    final DefaultListModel<Order> pickupModel = new DefaultListModel<>();
+    final ArrayList<Integer> cartIndices = new ArrayList<>();
+    final DefaultListModel<String> menuModel = new DefaultListModel<>();
+    final DefaultListModel<String> cartModel = new DefaultListModel<>();
+    final DefaultListModel<String> pickupModel = new DefaultListModel<>();
 
-    JList<Item> menuDisplay;
-    JList<Item> cartDisplay;
-    JList<Order> pickupDisplay;
+    JList<String> menuDisplay;
+    JList<String> cartDisplay;
+    JList<String> pickupDisplay;
     JLabel totalLabel;
     JTextField nameField;
     JButton addButton;
@@ -36,58 +28,29 @@ public class CustomerWindow
     JButton submitButton;
     JButton pickupButton;
 
-    // ~ Constructors ..........................................................
-
-    // ~Public Methods ........................................................
-    // ----------------------------------------------------------
-    /**
-     * Create a new CustomerWindow object.
-     * 
-     * @param menu
-     * @param orderQ
-     * @param pickup
-     */
-    public CustomerWindow(
-        Item[] menu,
-        LinkedQueue<Order> orderQ,
-        DoublyLinkedList<Order> pickup)
+    public CustomerWindow(String[] menuLabels)
     {
         super("JavaHouse(Customer)");
-
-        this.menu = menu;
-        this.orderQ = orderQ;
-        this.pickup = pickup;
-        this.currentOrder = new Order("", new ArrayList<>());
-
+        for (String label : menuLabels)
+        {
+            menuModel.addElement(label);
+        }
         initComponents();
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setVisible(true);
     }
 
-
-    /**
-     * Sets the JavaHouse that receives this window's button input.
-     *
-     * @param controller
-     *            the JavaHouse controller
-     */
     public void setController(JavaHouse controller)
     {
         this.controller = controller;
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Builds the menu, cart, and pickup lists plus the bottom button bar.
-     */
     private void initComponents()
     {
         setLayout(new BorderLayout());
 
-        menuDisplay = new JList<>(menu);
+        menuDisplay = new JList<>(menuModel);
         addButton = new JButton("Add to Order");
         addButton.addActionListener(
             e -> controller.handleAddItem(menuDisplay.getSelectedIndex()));
@@ -102,8 +65,7 @@ public class CustomerWindow
         JScrollPane cartPane = new JScrollPane(cartDisplay);
         cartPane.setBorder(BorderFactory.createTitledBorder("Your Order"));
         JScrollPane pickupPane = new JScrollPane(pickupDisplay);
-        pickupPane
-            .setBorder(BorderFactory.createTitledBorder("Ready for Pickup"));
+        pickupPane.setBorder(BorderFactory.createTitledBorder("Ready for Pickup"));
         JPanel center = new JPanel(new GridLayout(2, 1));
         center.add(cartPane);
         center.add(pickupPane);
@@ -128,120 +90,61 @@ public class CustomerWindow
         add(bottom, BorderLayout.SOUTH);
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Adds the given item to the current order and updates the cart.
-     *
-     * @param item
-     *            the item to add
-     */
-    void addItemToOrder(Item item)
+    void addItemToOrder(int menuIndex, String itemLabel, double newTotal)
     {
-        currentOrder.getItems().add(item);
-        refreshCart();
+        cartIndices.add(menuIndex);
+        cartModel.addElement(itemLabel);
+        totalLabel.setText(String.format("Total: $%.2f", newTotal));
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Removes the selected cart item from the current order, if one is
-     * selected.
-     */
     void removeItemFromOrder()
     {
         int index = cartDisplay.getSelectedIndex();
         if (index >= 0)
         {
-            currentOrder.getItems().remove(index);
-            refreshCart();
+            cartIndices.remove(index);
+            cartModel.remove(index);
+            totalLabel.setText(
+                String.format("Total: $%.2f", controller.calculateCartTotal(cartIndices)));
         }
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Sends the current order and typed name to JavaHouse, ignoring an empty
-     * cart.
-     */
     void submitOrder()
     {
-        if (currentOrder.getItems().isEmpty())
+        if (cartIndices.isEmpty())
         {
             return;
         }
         String name = nameField.getText().trim();
-        controller.handleSubmitOrder(
-            name.isEmpty() ? null : name,
-            currentOrder.getItems());
+        controller.handleSubmitOrder(name.isEmpty() ? null : name, cartIndices);
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Sends the selected pickup order's id and name to JavaHouse, if one is
-     * selected.
-     */
     void pickUpOrder()
     {
-        Order selected = pickupDisplay.getSelectedValue();
-        if (selected != null)
+        int index = pickupDisplay.getSelectedIndex();
+        if (index >= 0)
         {
-            controller.handlePickUpOrder(selected.getID(), selected.getName());
+            controller.handlePickUpOrderAtIndex(index);
         }
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Empties the current order and the name field after a successful submit.
-     */
     void clearOrder()
     {
-        currentOrder.getItems().clear();
-        nameField.setText("");
-        refreshCart();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Redraws the cart list and the total from the current order.
-     */
-    void refreshCart()
-    {
+        cartIndices.clear();
         cartModel.clear();
-        double total = 0;
-        for (Item item : currentOrder.getItems())
-        {
-            cartModel.addElement(item);
-            total += item.getPrice();
-        }
-        totalLabel.setText(String.format("Total: $%.2f", total));
+        nameField.setText("");
+        totalLabel.setText("Total: $0.00");
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Redraws the pickup list from the shared pickup list.
-     */
-    public void refreshPickup()
+    public void refreshPickup(String[] pickupLabels)
     {
         pickupModel.clear();
-        for (int i = 0; i < pickup.size(); i++)
+        for (String label : pickupLabels)
         {
-            pickupModel.addElement(pickup.get(i));
+            pickupModel.addElement(label);
         }
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Shows the customer a message in a pop-up dialog.
-     *
-     * @param message
-     *            the text to show
-     */
     void showMessage(String message)
     {
         JOptionPane.showMessageDialog(this, message);

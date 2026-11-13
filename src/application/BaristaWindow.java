@@ -2,75 +2,39 @@ package application;
 
 import javax.swing.*;
 import java.awt.*;
-
 // -------------------------------------------------------------------------
-/**
- * Write a one-sentence summary of your class here. Follow it with additional
- * details about its purpose, what abstraction it represents, and how to use it.
- * 
+/** 
  * @author lquezadr
  * @version Nov 6, 2026
  */
-public class BaristaWindow
-    extends JFrame
+
+public class BaristaWindow extends JFrame
 {
-    // ~ Fields ................................................................
-    final LinkedQueue<Order> orderQ;
-    final DoublyLinkedList<Order> pickup;
     JavaHouse controller;
 
-    final DefaultListModel<Order> pickupModel = new DefaultListModel<>();
+    final DefaultListModel<String> pickupModel = new DefaultListModel<>();
 
     JTextArea currentOrderDisplay;
     JTextArea selectedOrderDisplay;
-    JList<Order> pickupDisplay;
+    JList<String> pickupDisplay;
     JButton nextOrderButton;
     JButton completeOrderButton;
     JButton removeOrderButton;
 
-    // ~ Constructors ..........................................................
-
-    // ~Public Methods ........................................................
-    // ----------------------------------------------------------
-    /**
-     * Create a new BaristaWindow object.
-     * 
-     * @param orderQ
-     * @param pickup
-     */
-    public BaristaWindow(
-        LinkedQueue<Order> orderQ,
-        DoublyLinkedList<Order> pickup)
+    public BaristaWindow()
     {
         super("JavaHouse (Barista)");
-        this.orderQ = orderQ;
-        this.pickup = pickup;
-
         initComponents();
-
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setVisible(true);
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Sets the JavaHouse that receives this window's button input.
-     *
-     * @param controller
-     *            the JavaHouse controller
-     */
     public void setController(JavaHouse controller)
     {
         this.controller = controller;
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Builds the order displays, the pickup list, and the buttons.
-     */
     private void initComponents()
     {
         setLayout(new BorderLayout());
@@ -95,14 +59,11 @@ public class BaristaWindow
         pickupDisplay.addListSelectionListener(e -> showSelectedOrder());
 
         JScrollPane currentPane = new JScrollPane(currentOrderDisplay);
-        currentPane
-            .setBorder(BorderFactory.createTitledBorder("Current Order"));
+        currentPane.setBorder(BorderFactory.createTitledBorder("Current Order"));
         JScrollPane pickupPane = new JScrollPane(pickupDisplay);
-        pickupPane
-            .setBorder(BorderFactory.createTitledBorder("Ready for Pickup"));
+        pickupPane.setBorder(BorderFactory.createTitledBorder("Ready for Pickup"));
         JScrollPane selectedPane = new JScrollPane(selectedOrderDisplay);
-        selectedPane
-            .setBorder(BorderFactory.createTitledBorder("Selected Order"));
+        selectedPane.setBorder(BorderFactory.createTitledBorder("Selected Order"));
 
         JPanel center = new JPanel(new GridLayout(3, 1));
         center.add(currentPane);
@@ -115,127 +76,46 @@ public class BaristaWindow
         add(bottom, BorderLayout.SOUTH);
     }
 
+    void nextOrder() { controller.handleNextOrder(); }
 
-    // ----------------------------------------------------------
-    /**
-     * Asks JavaHouse to start the next order in the queue.
-     */
-    void nextOrder()
-    {
-        controller.handleNextOrder();
-    }
+    void completeOrder() { controller.handleCompleteOrder(); }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Asks JavaHouse to complete the order being prepared.
-     */
-    void completeOrder()
-    {
-        controller.handleCompleteOrder();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Asks JavaHouse to remove the selected pickup order, if one is selected.
-     */
     void removeOrder()
     {
-        Order selected = pickupDisplay.getSelectedValue();
-        if (selected != null)
+        int index = pickupDisplay.getSelectedIndex();
+        if (index >= 0)
         {
-            controller.handlePickUpOrder(selected.getID(), selected.getName());
+            controller.handlePickUpOrderAtIndex(index);
         }
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Updates the next-order button with the queue size and enables it only
-     * when orders are waiting.
-     */
-    public void refreshQueue()
+    public void refreshQueue(int count)
     {
-        int count = orderQ.size();
         nextOrderButton.setText("Next Order (" + count + ")");
         nextOrderButton.setEnabled(count > 0);
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Shows the head of the queue if it is being prepared, otherwise a no-order
-     * message.
-     */
-    void refreshCurrentOrder()
+    public void refreshCurrentOrder(String currentText)
     {
-        Order head = orderQ.peek();
-        if (head != null && Order.PREPARING.equals(head.getStatus()))
-        {
-            currentOrderDisplay.setText(describe(head));
-        }
-        else
-        {
-            currentOrderDisplay.setText("No order in progress");
-        }
+        currentOrderDisplay.setText(currentText);
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Redraws the pickup list from the shared pickup list.
-     */
-    public void refreshPickup()
+    public void refreshPickup(String[] pickupSummaries)
     {
         pickupModel.clear();
-        for (int i = 0; i < pickup.size(); i++)
+        for (String s : pickupSummaries)
         {
-            pickupModel.addElement(pickup.get(i));
+            pickupModel.addElement(s);
         }
         showSelectedOrder();
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Shows the details of the selected pickup order, or clears the display.
-     */
     void showSelectedOrder()
     {
-        Order selected = pickupDisplay.getSelectedValue();
-        selectedOrderDisplay
-            .setText(selected == null ? "" : describe(selected));
+        String selected = pickupDisplay.getSelectedValue();
+        selectedOrderDisplay.setText(selected == null ? "" : selected);
     }
 
-
-    // ----------------------------------------------------------
-    /**
-     * Returns an order's id, name, status, and items as multi-line text.
-     *
-     * @param order
-     *            the order to describe
-     * @return the description
-     */
-    private String describe(Order order)
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append(order).append("\nStatus: ").append(order.getStatus());
-        for (Item item : order.getItems())
-        {
-            sb.append("\n- ").append(item.getName());
-        }
-        return sb.toString();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Shows the barista a message in a pop-up dialog.
-     *
-     * @param message
-     *            the text to show
-     */
     void showMessage(String message)
     {
         JOptionPane.showMessageDialog(this, message);

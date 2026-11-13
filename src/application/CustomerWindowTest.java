@@ -3,11 +3,9 @@ package application;
 import student.TestCase;
 import java.util.ArrayList;
 
-
 // -------------------------------------------------------------------------
 /**
- * Write a one-sentence summary of your class here. Follow it with additional
- * details about its purpose, what abstraction it represents, and how to use it.
+ * Tests the decoupled CustomerWindow view methods.
  * 
  * @author lquezadr
  * @version Nov 12, 2026
@@ -17,24 +15,29 @@ public class CustomerWindowTest
 {
     // ~ Fields ................................................................
 
-    private Item latte;
-    private Item muffin;
-    private DoublyLinkedList<Order> pickup;
     private CustomerWindow window;
 
-    // ~ Constructors ..........................................................
+    // ~ Public Methods ........................................................
 
-    // ~Public Methods ........................................................
-
+    /**
+     * Creates a CustomerWindow and controller stub before each test.
+     */
     public void setUp()
     {
-        latte = new Item("Latte", "Drink", 4.50, 10);
-        muffin = new Item("Muffin", "Pastry", 3.25, 10);
-        pickup = new DoublyLinkedList<>();
         window = new CustomerWindow(
-            new Item[] { latte, muffin },
-            new LinkedQueue<Order>(),
-            pickup);
+            new String[] { "Latte ($4.50)", "Muffin ($3.25)" });
+        window.setController(new JavaHouse() {
+            @Override
+            public double calculateCartTotal(ArrayList<Integer> indices)
+            {
+                double total = 0;
+                for (int idx : indices)
+                {
+                    total += (idx == 0) ? 4.50 : 3.25;
+                }
+                return total;
+            }
+        });
     }
 
 
@@ -44,8 +47,8 @@ public class CustomerWindowTest
      */
     public void testAddItemToOrder()
     {
-        window.addItemToOrder(latte);
-        window.addItemToOrder(muffin);
+        window.addItemToOrder(0, "Latte ($4.50)", 4.50);
+        window.addItemToOrder(1, "Muffin ($3.25)", 7.75);
         assertEquals(2, window.cartModel.size());
         assertEquals("Total: $7.75", window.totalLabel.getText());
     }
@@ -57,11 +60,12 @@ public class CustomerWindowTest
      */
     public void testRemoveItemFromOrder()
     {
-        window.addItemToOrder(latte);
+        window.addItemToOrder(0, "Latte ($4.50)", 4.50);
         window.cartDisplay.setSelectedIndex(0);
         window.removeItemFromOrder();
         assertEquals(0, window.cartModel.size());
-        assertTrue(window.currentOrder.getItems().isEmpty());
+        assertTrue(window.cartIndices.isEmpty());
+        assertEquals("Total: $0.00", window.totalLabel.getText());
     }
 
 
@@ -71,7 +75,7 @@ public class CustomerWindowTest
      */
     public void testRemoveWithNoSelection()
     {
-        window.addItemToOrder(latte);
+        window.addItemToOrder(0, "Latte ($4.50)", 4.50);
         window.removeItemFromOrder();
         assertEquals(1, window.cartModel.size());
     }
@@ -83,7 +87,7 @@ public class CustomerWindowTest
      */
     public void testClearOrder()
     {
-        window.addItemToOrder(latte);
+        window.addItemToOrder(0, "Latte ($4.50)", 4.50);
         window.nameField.setText("Ann");
         window.clearOrder();
         assertEquals(0, window.cartModel.size());
@@ -94,12 +98,11 @@ public class CustomerWindowTest
 
     // ----------------------------------------------------------
     /**
-     * Tests that refreshPickup copies the pickup list into the display.
+     * Tests that refreshPickup copies the pickup array into the display.
      */
     public void testRefreshPickup()
     {
-        pickup.add(new Order("Ann", new ArrayList<Item>()));
-        window.refreshPickup();
+        window.refreshPickup(new String[] { "Order #0 - Ann [COMPLETE]" });
         assertEquals(1, window.pickupModel.size());
     }
 }

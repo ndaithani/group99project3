@@ -26,14 +26,15 @@ public class JavaHouse
     {
         model = new JavaHouseModel(buildMenu());
 
-        customerWindow = new CustomerWindow(
-            model.getMenu(),
-            model.getOrderQueue(),
-            model.getPickupList());
+        Item[] menu = model.getMenu();
+        String[] menuLabels = new String[menu.length];
+        for (int i = 0; i < menu.length; i++)
+        {
+            menuLabels[i] = menu[i].toString();
+        }
 
-        baristaWindow = new BaristaWindow(
-            model.getOrderQueue(),
-            model.getPickupList());
+        customerWindow = new CustomerWindow(menuLabels);
+        baristaWindow = new BaristaWindow();
 
         customerWindow.setController(this);
         baristaWindow.setController(this);
@@ -70,19 +71,47 @@ public class JavaHouse
             return;
         }
 
-        customerWindow.addItemToOrder(selectedItem);
+        ArrayList<Integer> preview = new ArrayList<>(customerWindow.cartIndices);
+        preview.add(index);
+
+        customerWindow.addItemToOrder(
+            index,
+            selectedItem.toString(),
+            calculateCartTotal(preview));
     }
 
 
     /**
-     * Submits the customer's order after validating the name and items.
+     * Calculates the total price for a list of selected menu indices.
+     *
+     * @param indices
+     *            the selected menu indices
+     * @return the total dollar amount
+     */
+    public double calculateCartTotal(ArrayList<Integer> indices)
+    {
+        Item[] menu = model.getMenu();
+        double total = 0;
+        for (int idx : indices)
+        {
+            if (idx >= 0 && idx < menu.length)
+            {
+                total += menu[idx].getPrice();
+            }
+        }
+        return total;
+    }
+
+
+    /**
+     * Submits the customer's order after validating the name and selected indices.
      *
      * @param name
      *            the customer's name
-     * @param items
-     *            the items in the customer's cart
+     * @param indices
+     *            the selected menu item indices in the customer's cart
      */
-    public void handleSubmitOrder(String name, ArrayList<Item> items)
+    public void handleSubmitOrder(String name, ArrayList<Integer> indices)
     {
         // Check that a customer name was entered.
         if (name == null || name.trim().isEmpty())
@@ -93,7 +122,7 @@ public class JavaHouse
         }
 
         // Check that the cart contains at least one item.
-        if (items == null || items.isEmpty())
+        if (indices == null || indices.isEmpty())
         {
             customerWindow.showMessage(
                 "Please add at least one item to your order.");
@@ -101,38 +130,28 @@ public class JavaHouse
         }
 
         Item[] menu = model.getMenu();
+        Item[] submittedItems = new Item[indices.size()];
 
-        // Make sure every item belongs to the menu and is in stock.
-        for (Item item : items)
+        // Make sure every index is valid and the corresponding item is in stock.
+        for (int i = 0; i < indices.size(); i++)
         {
-            boolean onMenu = false;
-
-            for (Item menuItem : menu)
-            {
-                if (item == menuItem)
-                {
-                    onMenu = true;
-                    break;
-                }
-            }
-
-            if (!onMenu)
+            int idx = indices.get(i);
+            if (idx < 0 || idx >= menu.length)
             {
                 customerWindow.showMessage(
-                    item.getName() + " is not on the menu.");
+                    "Invalid menu selection.");
                 return;
             }
 
-            if (!item.inStock())
+            if (!menu[idx].inStock())
             {
                 customerWindow.showMessage(
-                    item.getName() + " is out of stock.");
+                    menu[idx].getName() + " is out of stock.");
                 return;
             }
+
+            submittedItems[i] = menu[idx];
         }
-
-        // Convert the cart into the array expected by the model.
-        Item[] submittedItems = items.toArray(new Item[0]);
 
         try
         {
@@ -213,6 +232,25 @@ public class JavaHouse
 
 
     /**
+     * Looks up the order at the given pickup list index and processes pickup.
+     *
+     * @param index
+     *            the selected index in the pickup list
+     */
+    public void handlePickUpOrderAtIndex(int index)
+    {
+        DoublyLinkedList<Order> pickup = model.getPickupList();
+        if (index < 0 || index >= pickup.size())
+        {
+            return;
+        }
+
+        Order target = pickup.get(index);
+        handlePickUpOrder(target.getID(), target.getName());
+    }
+
+
+    /**
      * Checks the order ID and customer name before allowing pickup.
      *
      * @param id
@@ -256,15 +294,56 @@ public class JavaHouse
 
 
     /**
-     * Refreshes both windows using the latest model information.
+     * Refreshes both windows using plain strings/primitives derived from the model.
      */
     public void refreshAll()
     {
-        customerWindow.refreshPickup();
+        DoublyLinkedList<Order> pickup = model.getPickupList();
+        String[] pickupLabels = new String[pickup.size()];
+        String[] baristaPickupDetails = new String[pickup.size()];
 
-        baristaWindow.refreshQueue();
-        baristaWindow.refreshCurrentOrder();
-        baristaWindow.refreshPickup();
+        for (int i = 0; i < pickup.size(); i++)
+        {
+            Order o = pickup.get(i);
+            pickupLabels[i] = o.toString();
+            baristaPickupDetails[i] = describeOrder(o);
+        }
+
+        customerWindow.refreshPickup(pickupLabels);
+
+        LinkedQueue<Order> q = model.getOrderQueue();
+        baristaWindow.refreshQueue(q.size());
+
+        Order head = q.peek();
+        if (head != null && "PREPARING".equals(head.getStatus()))
+        {
+            baristaWindow.refreshCurrentOrder(describeOrder(head));
+        }
+        else
+        {
+            baristaWindow.refreshCurrentOrder("No order in progress");
+        }
+
+        baristaWindow.refreshPickup(baristaPickupDetails);
+    }
+
+
+    /**
+     * Formats an order's summary, status, and item names into multi-line text.
+     *
+     * @param order
+     *            the order to describe
+     * @return the formatted description
+     */
+    private String describeOrder(Order order)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(order).append("\nStatus: ").append(order.getStatus());
+        for (Item item : order.getItems())
+        {
+            sb.append("\n- ").append(item.getName());
+        }
+        return sb.toString();
     }
 
 

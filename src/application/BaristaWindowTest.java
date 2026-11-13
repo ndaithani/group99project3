@@ -1,12 +1,10 @@
 package application;
 
 import student.TestCase;
-import java.util.ArrayList;
 
 // -------------------------------------------------------------------------
 /**
- * Write a one-sentence summary of your class here. Follow it with additional
- * details about its purpose, what abstraction it represents, and how to use it.
+ * Tests the decoupled BaristaWindow view methods.
  * 
  * @author lquezadr
  * @version Nov 12, 2026
@@ -16,24 +14,16 @@ public class BaristaWindowTest
 {
     // ~ Fields ................................................................
 
-    private LinkedQueue<Order> orderQ;
-    private DoublyLinkedList<Order> pickup;
     private BaristaWindow window;
-    private Order order;
 
-    // ~ Constructors ..........................................................
+    // ~ Public Methods ........................................................
 
-    // ~Public Methods ........................................................
-    
     /**
-     * Creates a window and one sample order before each test.
+     * Creates a BaristaWindow before each test.
      */
     public void setUp()
     {
-        orderQ = new LinkedQueue<>();
-        pickup = new DoublyLinkedList<>();
-        window = new BaristaWindow(orderQ, pickup);
-        order = new Order("Ann", new ArrayList<Item>());
+        window = new BaristaWindow();
     }
 
 
@@ -43,7 +33,7 @@ public class BaristaWindowTest
      */
     public void testRefreshQueueEmpty()
     {
-        window.refreshQueue();
+        window.refreshQueue(0);
         assertEquals("Next Order (0)", window.nextOrderButton.getText());
         assertFalse(window.nextOrderButton.isEnabled());
     }
@@ -55,8 +45,7 @@ public class BaristaWindowTest
      */
     public void testRefreshQueue()
     {
-        orderQ.enqueue(order);
-        window.refreshQueue();
+        window.refreshQueue(1);
         assertEquals("Next Order (1)", window.nextOrderButton.getText());
         assertTrue(window.nextOrderButton.isEnabled());
     }
@@ -64,12 +53,11 @@ public class BaristaWindowTest
 
     // ----------------------------------------------------------
     /**
-     * Tests that a pending head order is not shown as the current order.
+     * Tests that a no-order message displays when nothing is preparing.
      */
     public void testRefreshCurrentOrderPending()
     {
-        orderQ.enqueue(order);
-        window.refreshCurrentOrder();
+        window.refreshCurrentOrder("No order in progress");
         assertEquals(
             "No order in progress",
             window.currentOrderDisplay.getText());
@@ -78,13 +66,12 @@ public class BaristaWindowTest
 
     // ----------------------------------------------------------
     /**
-     * Tests that a preparing head order is shown as the current order.
+     * Tests that a preparing order summary is shown as the current order.
      */
     public void testRefreshCurrentOrderPreparing()
     {
-        order.setStatus(Order.PREPARING);
-        orderQ.enqueue(order);
-        window.refreshCurrentOrder();
+        window.refreshCurrentOrder(
+            "Order #0 - Ann [PREPARING]\nStatus: PREPARING\n- Latte");
         assertTrue(window.currentOrderDisplay.getText().contains("Ann"));
     }
 
@@ -95,8 +82,9 @@ public class BaristaWindowTest
      */
     public void testRefreshPickup()
     {
-        pickup.add(order);
-        window.refreshPickup();
+        window.refreshPickup(new String[] {
+            "Order #0 - Ann [COMPLETE]\nStatus: COMPLETE\n- Latte"
+        });
         assertEquals(1, window.pickupModel.size());
 
         window.pickupDisplay.setSelectedIndex(0);
