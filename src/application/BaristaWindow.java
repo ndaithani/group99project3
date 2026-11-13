@@ -15,19 +15,18 @@ public class BaristaWindow
     extends JFrame
 {
     // ~ Fields ................................................................
-    private final LinkedQueue<Order> orderQ;
-    private final DoublyLinkedList<Order> pickup;
-    private JavaHouse controller;
+    final LinkedQueue<Order> orderQ;
+    final DoublyLinkedList<Order> pickup;
+    JavaHouse controller;
 
-    private final DefaultListModel<Order> pickupModel =
-        new DefaultListModel<>();
+    final DefaultListModel<Order> pickupModel = new DefaultListModel<>();
 
-    private JTextArea currentOrderDisplay;
-    private JTextArea selectedOrderDisplay;
-    private JList<Order> pickupDisplay;
-    private JButton nextOrderButton;
-    private JButton completeOrderButton;
-    private JButton removeOrderButton;
+    JTextArea currentOrderDisplay;
+    JTextArea selectedOrderDisplay;
+    JList<Order> pickupDisplay;
+    JButton nextOrderButton;
+    JButton completeOrderButton;
+    JButton removeOrderButton;
 
     // ~ Constructors ..........................................................
 
@@ -43,7 +42,7 @@ public class BaristaWindow
         LinkedQueue<Order> orderQ,
         DoublyLinkedList<Order> pickup)
     {
-        super("JavaHouse - Barista");
+        super("JavaHouse (Barista)");
         this.orderQ = orderQ;
         this.pickup = pickup;
 
@@ -190,9 +189,9 @@ public class BaristaWindow
     public void refreshPickup()
     {
         pickupModel.clear();
-        for (Order order : pickup)
+        for (int i = 0; i < pickup.size(); i++)
         {
-            pickupModel.addElement(order);
+            pickupModel.addElement(pickup.get(i));
         }
         showSelectedOrder();
     }
