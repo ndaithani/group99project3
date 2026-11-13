@@ -47,12 +47,12 @@ Tests that verify new customization methods and pricing calculations, especially
 
 | File | Team Member(s) | Contribution |
 | :--- | :--- | :--- |
-| `Item.java` | Naomika Aithani | Wrote class, constructors, stock guards, and getters |
-| `Order.java` | Naomika Aithani | Wrote class, status constants/normalization, defensive array copying, and overloaded constructors |
+| `Item.java` | Naomika Aithani | Wrote class, constructor, and methods |
+| `Order.java` | Naomika Aithani | Wrote class, constructors, and methods |
 | `LinkedQueue.java` | Naomika Aithani | Recycled and adapted generic linked queue implementation from prior assignment |
-| `LinkedQueueTest.java` | Naomika Aithani | Wrote JUnit tests for queue operations and exception cases |
+| `LinkedQueueTest.java` | Naomika Aithani | Wrote JUnit tests for queue operations and exceptions |
 | `DoublyLinkedList.java` | Naomika Aithani | Recycled and adapted generic doubly linked list with minimal edits |
-| `DoublyLinkedListTest.java` | Naomika Aithani | Wrote JUnit tests for list operations, bounds, and removal |
+| `DoublyLinkedListTest.java` | Naomika Aithani | Wrote JUnit tests for list methods and exceptions |
 | `JavaHouseModel.java` | Naomika Aithani | Wrote model state management methods and a standalone main method, used AI to ensure methods were valid and structure would fit the rubric criteria |
 | `JavaHouseModelTest.java` | Naomika Aithani | Wrote JUnit tests for order submission, stock limits, queue progression, and pickup |
 | `CustomerWindow.java` | Leo Quezada-Rocha | Created with GenAI and reviewed by Leo |
