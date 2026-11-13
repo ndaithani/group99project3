@@ -16,26 +16,25 @@ public class CustomerWindow
     extends JFrame
 {
     // ~ Fields ................................................................
-    private final Item[] menu;
-    private final LinkedQueue<Order> orderQ;
-    private final DoublyLinkedList<Order> pickup;
+    final Item[] menu;
+    final LinkedQueue<Order> orderQ;
+    final DoublyLinkedList<Order> pickup;
 
-    private JavaHouse controller;
-    private Order currentOrder;
+    JavaHouse controller;
+    Order currentOrder;
 
-    private final DefaultListModel<Item> cartModel = new DefaultListModel<>();
-    private final DefaultListModel<Order> pickupModel =
-        new DefaultListModel<>();
+    final DefaultListModel<Item> cartModel = new DefaultListModel<>();
+    final DefaultListModel<Order> pickupModel = new DefaultListModel<>();
 
-    private JList<Item> menuDisplay;
-    private JList<Item> cartDisplay;
-    private JList<Order> pickupDisplay;
-    private JLabel totalLabel;
-    private JTextField nameField;
-    private JButton addButton;
-    private JButton removeButton;
-    private JButton submitButton;
-    private JButton pickupButton;
+    JList<Item> menuDisplay;
+    JList<Item> cartDisplay;
+    JList<Order> pickupDisplay;
+    JLabel totalLabel;
+    JTextField nameField;
+    JButton addButton;
+    JButton removeButton;
+    JButton submitButton;
+    JButton pickupButton;
 
     // ~ Constructors ..........................................................
 
@@ -229,9 +228,9 @@ public class CustomerWindow
     public void refreshPickup()
     {
         pickupModel.clear();
-        for (Order order : pickup)
+        for (int i = 0; i < pickup.size(); i++)
         {
-            pickupModel.addElement(order);
+            pickupModel.addElement(pickup.get(i));
         }
     }
 
