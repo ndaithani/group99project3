@@ -2,6 +2,14 @@ package application;
 
 import java.util.NoSuchElementException;
 
+// -------------------------------------------------------------------------
+/**
+ *  LinkedQueue class holding generic nodes.
+ *  @param <T>
+ * 
+ *  @author naomi
+ *  @version Nov 13, 2026
+ */
 public class LinkedQueue<T> {
     private static class Node<T> {
         T data;
@@ -16,20 +24,39 @@ public class LinkedQueue<T> {
     private Node<T> tail;
     private int size;
 
+    // ----------------------------------------------------------
+    /**
+     * Create a new LinkedQueue object.
+     */
     public LinkedQueue() {
         head = null;
         tail = null;
         size = 0;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * tests if empty.
+     * @return size == 0
+     */
     public boolean isEmpty() {
         return size == 0;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Returns size of queue
+     * @return size
+     */
     public int size() {
         return size;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Adds new entry to the back
+     * @param newEntry
+     */
     public void enqueue(T newEntry) {
         if (newEntry == null) {
             throw new IllegalArgumentException("Cannot enqueue null.");
@@ -45,6 +72,11 @@ public class LinkedQueue<T> {
         size++;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Removes oldest entry from the front
+     * @return -- old head
+     */
     public T dequeue() {
         if (isEmpty()) {
             throw new NoSuchElementException("Queue is empty.");
@@ -58,6 +90,11 @@ public class LinkedQueue<T> {
         return data;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Nondestructively returns the head of queue.
+     * @return -- head
+     */
     public T peek() {
         if (isEmpty()) {
             return null;

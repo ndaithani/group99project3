@@ -1,10 +1,12 @@
 package application;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
+// -------------------------------------------------------------------------
 /**
- * Manages the data of the JavaHouse App.
+ * Manages the data of the JavaHouse App, including the menu, active order
+ * queue, and completed pickup list.
  *
  * @author Naomika Aithani
  * @version Nov 12, 2026
@@ -17,8 +19,10 @@ public class JavaHouseModel {
 
     // ----------------------------------------------------------
     /**
-     * Create a new JavaHouseModel object.
+     * Creates a new JavaHouseModel object with the given menu.
+     * 
      * @param menu
+     *            the array of menu items available at JavaHouse
      */
     public JavaHouseModel(Item[] menu) {
         if (menu == null) {
@@ -29,75 +33,137 @@ public class JavaHouseModel {
         this.pickup = new DoublyLinkedList<Order>();
     }
 
+
     // ----------------------------------------------------------
     /**
-     * Get the menu.
-     * @return -- menu
+     * Gets the array of menu items.
+     * 
+     * @return the menu array
      */
     public Item[] getMenu() {
         return menu;
     }
 
+
     // ----------------------------------------------------------
     /**
-     * Get the order queue.
-     * @return -- queue
+     * Gets the queue of orders waiting to be prepared or in progress.
+     * 
+     * @return the order queue
      */
     public LinkedQueue<Order> getOrderQueue() {
         return queue;
     }
 
+
     // ----------------------------------------------------------
     /**
-     * Get the pickup list.
-     * @return -- pickup
+     * Gets the list of completed orders ready for customer pickup.
+     * 
+     * @return the pickup list
      */
     public DoublyLinkedList<Order> getPickupList() {
         return pickup;
     }
 
+
     // ----------------------------------------------------------
     /**
-     * Create and submit an order.
-     * @return -- a new order
+     * Validates stock, decrements inventory, creates a new order from an
+     * Item array of any length, and adds it to the order queue.
+     * 
+     * @param name
+     *            the customer's name
+     * @param items
+     *            the array of ordered items
+     * @return the newly created Order
      */
-    public Order submitOrder(String name, ArrayList<Item> items) {
-        if (name == null || name.trim().isEmpty() || items == null || items.isEmpty()) {
+    public Order submitOrder(String name, Item[] items) {
+        if (name == null || name.trim().isEmpty() || items == null
+            || items.length == 0) {
             throw new IllegalArgumentException("Please complete your order!");
         }
-        for (int i = 0; i < items.size(); i++) {
-            if (!items.get(i).inStock()) {
-                throw new IllegalStateException(items.get(i).getName() + " is out of stock!");
+
+        // Validate every item and check stock against requested quantities
+        for (int i = 0; i < items.length; i++) {
+            Item current = items[i];
+            if (current == null) {
+                throw new IllegalArgumentException(
+                    "Order cannot contain null items.");
+            }
+            if (!current.inStock()) {
+                throw new IllegalStateException(
+                    current.getName() + " is out of stock!");
+            }
+            int requested = 0;
+            for (int j = 0; j < items.length; j++) {
+                if (items[j] == current) {
+                    requested++;
+                }
+            }
+            if (requested > current.getStock()) {
+                throw new IllegalStateException(
+                    current.getName() + " is out of stock!");
             }
         }
-        for (int i = 0; i < items.size(); i++) {
-            items.get(i).decrementStock();
+
+        // Decrement stock for each ordered item
+        for (int i = 0; i < items.length; i++) {
+            items[i].decrementStock();
         }
+
         Order newOrder = new Order(name.trim(), lastID, items);
         queue.enqueue(newOrder);
         lastID++;
         return newOrder;
     }
 
+
+    // ----------------------------------------------------------
+    /**
+     * Completes the order at the front of the queue, marks it complete, and
+     * moves it to the pickup list.
+     * 
+     * @return the completed Order
+     */
     public Order completeOrder() {
         if (queue.isEmpty()) {
             throw new IllegalStateException("Order queue is empty.");
         }
         Order completed = queue.dequeue();
-        completed.setStatus("COMPLETE");
+        completed.setStatus(Order.COMPLETE);
         pickup.add(completed);
         return completed;
     }
 
+
+    // ----------------------------------------------------------
+    /**
+     * Marks the next order at the front of the queue as currently preparing.
+     * 
+     * @return the Order being prepared
+     */
     public Order nextOrder() {
         if (queue.isEmpty()) {
             throw new IllegalStateException("Order queue is empty.");
         }
         Order next = queue.peek();
-        next.setStatus("PREPARING");
+        next.setStatus(Order.PREPARING);
         return next;
     }
 
+
+    // ----------------------------------------------------------
+    /**
+     * Removes a completed order from the pickup list when the ID and customer
+     * name match.
+     * 
+     * @param id
+     *            the order ID to pick up
+     * @param name
+     *            the customer name associated with the order
+     * @return true if the matching order was found and removed, false otherwise
+     */
     public boolean pickUpOrder(int id, String name) {
         if (name == null) {
             return false;
@@ -112,6 +178,15 @@ public class JavaHouseModel {
         return false;
     }
 
+
+    // ----------------------------------------------------------
+    /**
+     * Runs a standalone console test mode using dynamically resized Item
+     * arrays.
+     * 
+     * @param args
+     *            command-line arguments
+     */
     public static void main(String[] args) {
         Item[] menu = new Item[10];
         menu[0] = new Item("Hot Coffee", "Hot Drink", 4.00, 100);
@@ -126,6 +201,7 @@ public class JavaHouseModel {
         menu[9] = new Item("Donut Hole (12)", "Snack", 7.00, 40);
 
         JavaHouseModel model = new JavaHouseModel(menu);
+        @SuppressWarnings("resource")
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
@@ -149,17 +225,20 @@ public class JavaHouseModel {
                     case "1":
                         for (int i = 0; i < menu.length; i++) {
                             System.out.printf("[%d] %s - $%.2f (Stock: %d)%n",
-                                i, menu[i].getName(), menu[i].getPrice(), menu[i].getStock());
+                                i, menu[i].getName(), menu[i].getPrice(),
+                                menu[i].getStock());
                         }
                         break;
 
                     case "2":
                         System.out.print("Enter customer name: ");
                         String custName = scanner.nextLine();
-                        ArrayList<Item> cart = new ArrayList<>();
+                        Item[] cart = new Item[4];
+                        int itemCount = 0;
 
                         while (true) {
-                            System.out.print("Enter item index (0-" + (menu.length - 1) + ") or 'done': ");
+                            System.out.print("Enter item index (0-"
+                                + (menu.length - 1) + ") or 'done': ");
                             String input = scanner.nextLine().trim();
                             if (input.equalsIgnoreCase("done")) {
                                 break;
@@ -169,15 +248,22 @@ public class JavaHouseModel {
                                 if (idx < 0 || idx >= menu.length) {
                                     System.out.println("Invalid menu index.");
                                 } else {
-                                    cart.add(menu[idx]);
-                                    System.out.println("Added: " + menu[idx].getName());
+                                    if (itemCount == cart.length) {
+                                        cart = Arrays.copyOf(
+                                            cart, cart.length * 2);
+                                    }
+                                    cart[itemCount++] = menu[idx];
+                                    System.out.println(
+                                        "Added: " + menu[idx].getName());
                                 }
                             } catch (NumberFormatException e) {
-                                System.out.println("Please enter a valid number or 'done'.");
+                                System.out.println(
+                                    "Please enter a valid number or 'done'.");
                             }
                         }
 
-                        Order created = model.submitOrder(custName, cart);
+                        Item[] finalCart = Arrays.copyOf(cart, itemCount);
+                        Order created = model.submitOrder(custName, finalCart);
                         System.out.println("Order submitted! " + created);
                         break;
 
@@ -188,7 +274,8 @@ public class JavaHouseModel {
 
                     case "4":
                         Order completed = model.completeOrder();
-                        System.out.println("Completed & moved to pick-up: " + completed);
+                        System.out.println(
+                            "Completed & moved to pick-up: " + completed);
                         break;
 
                     case "5":
@@ -199,13 +286,16 @@ public class JavaHouseModel {
                         if (model.pickUpOrder(id, pickupName)) {
                             System.out.println("Order #" + id + " picked up!");
                         } else {
-                            System.out.println("No matching order found in pick-up list.");
+                            System.out.println(
+                                "No matching order found in pick-up list.");
                         }
                         break;
 
                     case "6":
-                        System.out.println("Order Queue: " + model.getOrderQueue());
-                        System.out.println("Pick-Up List: " + model.getPickupList());
+                        System.out.println(
+                            "Order Queue: " + model.getOrderQueue());
+                        System.out.println(
+                            "Pick-Up List: " + model.getPickupList());
                         break;
 
                     case "7":

@@ -1,5 +1,13 @@
 package application;
 
+// -------------------------------------------------------------------------
+/**
+ *  Doubly Linked List holding generic nodes
+ *  @param <T>
+ * 
+ *  @author Naomika
+ *  @version Nov 12, 2026
+ */
 public class DoublyLinkedList<T> {
     private static class Node<T> {
         T data;
@@ -15,20 +23,39 @@ public class DoublyLinkedList<T> {
     private Node<T> tail;
     private int size;
 
+    // ----------------------------------------------------------
+    /**
+     * Create a new DoublyLinkedList object.
+     */
     public DoublyLinkedList() {
         head = null;
         tail = null;
         size = 0;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * checks if empty
+     * @return -- size == 0
+     */
     public boolean isEmpty() {
         return size == 0;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Returns size
+     * @return  size
+     */
     public int size() {
         return size;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Adds a new element
+     * @param element
+     */
     public void add(T element) {
         if (element == null) {
             throw new IllegalArgumentException("Cannot add null element.");
@@ -45,6 +72,12 @@ public class DoublyLinkedList<T> {
         size++;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Gets an indexed item from the list
+     * @param index
+     * @return -- item at given index
+     */
     public T get(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index);
@@ -56,6 +89,12 @@ public class DoublyLinkedList<T> {
         return curr.data;
     }
 
+    // ----------------------------------------------------------
+    /**
+     * removes a given element from list if present
+     * @param element
+     * @return success / no success
+     */
     public boolean remove(T element) {
         if (element == null || isEmpty()) {
             return false;
