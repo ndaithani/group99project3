@@ -1,53 +1,43 @@
 # Reflection
-**What Changed?**
-* Added a main() method to the `JavaHouseModel` in order to allow
-* Use of ArrayLists and Arrays to manage item data to allow for dynamic editing of a selection then permanent instatiation.
-* Removed direct model-view interaction in order to adhere to MVC standards.
-* Status normalization was instantiated in order to allow for more sta
-* Indexed getters were implemented to `DoublyLinkedList` to create string lists.
+**How did your design absorb the change?**
+The change made was the addition of two basic GUI's (`BaristaWindow.java` and `CustomerWindow.java`) that act as views. Because these changes were views, they only touched the controller (`JavaHouse.java`), which in turn interacted with the model classes. 
 
-**Does the model stand alone?**
-Yes, the model has zero GUI dependencies and runs independently in a terminal via the main method. 
+**Did the change cross the model/view line?**
+The change did not cross the model/view line; instead, the GUI's *were* the views. To ensure that no changes affected anything they shouldn't have, careful consideration was taken to ensure the view solely interacted with the controller.
 
-**What happened to your unknowns?**
-We learned how to continuously update the line to keep both GUIs synchronized. We plan to explore order customization next to continually learn, however we decided that a real-time timer loop is no longer needed due to interactive barista controls.
+**What changed from your D3 plan?**
+We initially planned to implement customization in this deliverable, however we decided to take our initial views and expand them in order to create two detailed GUI's with data that syncs across them, displayed appropriately for the target audience of either. 
 
 **What doesn't work yet?**
-* Null checks in the view must be implemented.
-* Name validation must be implemented.
-* JUnit testing for all methods with full coverage must be implemented.
+At this current point, all features and cases should act as intended.
 
 
 
 # Next Steps
-**What is left to finish the MVP?**
-* Add validation of names and other potentially-null parameters to the view.
-* Complete JUnit testing across `Item`, `Order`, and `JavaHouse` controller edge cases.
-* Ensure testing is complete and fully covers the app's code.
+**What is left for the final build?**
+No originally-planned MVP features are left to be completed for the final build.
 
-**What will we add to Deliverable 4?**
-* Order customization
-  * Requires changes made to `Item`'s fields and toString() method, `JavaHouseModel`'s submitOrder() method, `JavaHouse`'s handleAddItem()/handleSubmitOrder() methods, and `CustomerWindow`'s GUI.
-  * `LinkedQueue`, `DoublyLinkedList`, `Order`, and `BaristaWindow` may stay the same because none of the first three directly interact with `Item`'s properties, only hold `Order`s or `Item`s respectively. The fourth may stay the same due to it only displaying the data provided by the `Item`s in each `Order`, not possibilities.
+**Which stretch goals are you committing to?** 
+We are committing to implementing item customization and trivial edits to the GUI, mostly for aesthetic purposes.
 
-**Which stretch goals will you attempt?**
-We will be attempting to integrate order customization.
+**What will your 3-minute demo show?"** 
+The lifecycle of an order in the app across both views: the customer makes an order, the barista starts the order, the customer views the order queue, the barista completes the order, and the customer removes the order from the pick-up queue using their identification.
 
-**What new tests will you need?**
-Tests that verify new customization methods and pricing calculations, especially validation for invalid or null customization selections.
+**Who does what?**
+- Naomika: Implementing item customization
+- Leo: Visual edits to the GUI (`BaristaWindow.java`)
+- Daana: Visual edits to the GUI (`CustomerWindow.java`)
 
-**Who will do what?**
-* **Leo Quezada-Rocha:** Implement null-checks in GUI and make aesthetic edits.
-* **Sachin Nimmalapudi:** Implement testing for his methods.
-* **Naomika Aithani:** Implement customization for items.
-* **Daana Doddabendigere:** Ensure overall integration through controller(`JavaHouse`).
+
 
 # Attribution & GenAI Note
 
 | File | Team Member(s) | Contribution |
 | :--- | :--- | :--- |
 | `Item.java` | Naomika Aithani and Daana Doddabendigere | Wrote class, constructor, and methods |
+| `ItemTest.java` | Naomika Aithani | Wrote JUnit tests for list methods and exceptions |
 | `Order.java` | Naomika Aithani and Daana Doddabendigere | Wrote class, constructors, and methods |
+| `OrderTest.java` | Naomika Aithani | Wrote JUnit tests for list methods and exceptions |
 | `LinkedQueue.java` | Naomika Aithani | Recycled and adapted generic linked queue implementation from prior assignment |
 | `LinkedQueueTest.java` | Naomika Aithani | Wrote JUnit tests for queue operations and exceptions |
 | `DoublyLinkedList.java` | Naomika Aithani | Recycled and adapted generic doubly linked list with minimal edits |
