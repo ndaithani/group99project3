@@ -1,6 +1,6 @@
 # Reflection
 **How did your design absorb the change?**
-The change made was the addition of two basic GUI's (`BaristaWindow.java` and `CustomerWindow.java`) that act as views. Because these changes were views, they only touched the controller (`JavaHouse.java`), which in turn interacted with the model classes. 
+The change made was the addition of two basic GUI's (`BaristaWindow.java` and `CustomerWindow.java`) that act as views. Because these changes were views, they only touched the controller (`JavaHouse.java`), which in turn interacted with the model classes. This change opposed the originally planned change, which was to implement customization, which would have affected the `Item.java` and `Order.java` classes.
 
 **Did the change cross the model/view line?**
 The change did not cross the model/view line; instead, the GUI's *were* the views. To ensure that no changes affected anything they shouldn't have, careful consideration was taken to ensure the view solely interacted with the controller.
